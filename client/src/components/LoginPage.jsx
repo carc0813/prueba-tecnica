@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({
-    user: '',
+    username: '',
     password: '',
   });
   const dispatch = useDispatch();
@@ -16,9 +16,18 @@ const LoginPage = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    
     e.preventDefault();
-    dispatch(loginUser(credentials));
+    console.log('Enviando credenciales:', credentials);
+    const success = await dispatch(loginUser(credentials)); // Llamamos a loginUser
+    console.log('Resultado de loginUser:', success);
+    if (success) {
+      console.log('Resultado de loginUser:', success);
+      navigate('/home'); // Redirigir al home si el login fue exitoso
+    } else {
+      alert('Error de login'); // O cualquier mensaje de error que quieras mostrar
+    }
   };
 
   const handleRegister = async () => {
@@ -38,8 +47,8 @@ const LoginPage = () => {
       <form onSubmit={handleSubmit}>
         <TextField
           label="Nombre de Usuario"
-          name="user"
-          value={credentials.user}
+          name="username"
+          value={credentials.username}
           onChange={handleChange}
           fullWidth
           margin="normal"
@@ -71,3 +80,5 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+

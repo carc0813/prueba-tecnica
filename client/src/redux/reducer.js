@@ -8,6 +8,7 @@ import {
   CREATE_PROJECT,
   GET_PROJECTS,
   LOGIN,
+  LOGIN_FAILURE,
   REGISTER,
   REGISTER_FAIL,
 } from "./actions";
@@ -19,6 +20,7 @@ const initialState = {
   user: [],
   loading: false,
   error: null,
+  isAuthenticated: false,
 };
 
 export default function rootReducer(state = initialState, action) {
@@ -58,7 +60,9 @@ export default function rootReducer(state = initialState, action) {
         projects: action.payload,
       };
     case LOGIN:
-      return { ...state, user: action.payload };
+        return { ...state, isAuthenticated: true, user: action.payload, error: null };
+      case LOGIN_FAILURE:
+        return { ...state, isAuthenticated: false, user: null, error: action.payload };
     case REGISTER:
     //  console.log('Acción REGISTER_USER recibida:', action.payload);
       return { ...state,
