@@ -14,7 +14,9 @@ export const REGISTER = 'REGISTER';
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const GET_PROJECTS = 'GET_PROJECTS';
 export const  REGISTER_FAIL="REGISTER_FAIL";
-
+export const GET_USER_STORIES = 'GET_USER_STORIES';
+export const CREATE_USER_STORY = 'CREATE_USER_STORY';
+export const SET_ERROR = 'SET_ERROR';
 // Acción para crear una nueva empresa
 export const createCompany = (companyData) => {
     return (dispatch) => {
@@ -171,6 +173,36 @@ export function getTickets() {
 
 
 
+// Action Creators
+export const getUserStories = () => async (dispatch) => {
+  try {
+    const response = await axios.get('http://localhost:3001/stories');
+    dispatch({
+      type: GET_USER_STORIES,
+      payload: response.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: SET_ERROR,
+      payload: error.message,
+    });
+  }
+};
+
+export const createUserStory = (storyData) => async (dispatch) => {
+  try {
+    const response = await axios.post('http://localhost:3001/stories', storyData);
+    dispatch({
+      type: CREATE_USER_STORY,
+      payload: response.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: SET_ERROR,
+      payload: error.message,
+    });
+  }
+};
 
 
 

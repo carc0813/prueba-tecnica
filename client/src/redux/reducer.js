@@ -11,6 +11,9 @@ import {
   LOGIN_FAILURE,
   REGISTER,
   REGISTER_FAIL,
+  GET_USER_STORIES,
+   CREATE_USER_STORY, 
+   SET_ERROR 
 } from "./actions";
 
 const initialState = {
@@ -18,6 +21,7 @@ const initialState = {
   projects: [],
   tickets: [],
   user: [],
+  userStories: [],
   loading: false,
   error: null,
   isAuthenticated: false,
@@ -60,21 +64,49 @@ export default function rootReducer(state = initialState, action) {
         projects: action.payload,
       };
     case LOGIN:
-        return { ...state, isAuthenticated: true, user: action.payload, error: null };
-      case LOGIN_FAILURE:
-        return { ...state, isAuthenticated: false, user: null, error: action.payload };
-    case REGISTER:
-    //  console.log('Acción REGISTER_USER recibida:', action.payload);
-      return { ...state,
-        user:action.payload,
-
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload,
+        error: null,
       };
+    case LOGIN_FAILURE:
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
+        error: action.payload,
+      };
+    case REGISTER:
+      //  console.log('Acción REGISTER_USER recibida:', action.payload);
+      return { ...state, user: action.payload };
     case REGISTER_FAIL:
       return {
         ...state,
         error: action.payload, // Guardar el mensaje de error
         loading: false,
       };
+      case GET_USER_STORIES:
+      return {
+        ...state,
+        userStories: action.payload,
+        error: null,
+      };
+
+    case CREATE_USER_STORY:
+      return {
+        ...state,
+        userStories: [...state.userStories, action.payload],
+        error: null,
+      };
+
+    case SET_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+
     default:
       return state;
   }

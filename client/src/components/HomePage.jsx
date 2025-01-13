@@ -1,77 +1,115 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getCompanies, getProjects, getTickets } from '../redux/actions';
-import { Card, CardContent, Typography, Button, Box, CircularProgress } from '@mui/material';
-
-
+import { useSelector, useDispatch } from 'react-redux';
+import { getProjects, getUserStories, getTickets  } from '../redux/actions';
+import { Container, Typography, Grid, Paper, List, ListItem, ListItemText, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   const dispatch = useDispatch();
 
+  // Obtener datos del estado
+  const projects = useSelector((state) => state.projects);
+  const userStories = useSelector((state) => state.userStories);
+  const tickets = useSelector((state) => state.tickets);
+
+  // Cargar datos al montar el componente
   useEffect(() => {
-    dispatch(getCompanies());
     dispatch(getProjects());
+    dispatch(getUserStories());
     dispatch(getTickets());
   }, [dispatch]);
 
-  // Selección de datos del estado global
-  const companies = useSelector((state) => state.companies.companies);
-  const projects = useSelector((state) => state.projects.projects);
-  const tickets = useSelector((state) => state.tickets.tickets);
-
-  // Control de carga
-  const isLoading = !companies.length || !projects.length || !tickets.length;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom>
-        Companies
+    <Container>
+      <Typography variant="h3" gutterBottom>
+        Dashboard
       </Typography>
 
-      {isLoading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        companies.map((company) => (
-          <Card key={company.id} style={{ marginBottom: '20px' }}>
-            <CardContent>
-              <Typography variant="h6">{company.name}</Typography>
-              <Typography variant="body2">Email: {company.email}</Typography>
-              <Typography variant="body2">Phone: {company.phone}</Typography>
-              <Typography variant="body2">Address: {company.address}</Typography>
+      {/* Sección de Proyectos */}
+      <Paper elevation={3} style={{ padding: '20px', marginBottom: '20px' }}>
+        <Typography variant="h5" gutterBottom>
+          Proyectos
+        </Typography>
+        <List>
+          {projects.map((project) => (
+            <ListItem key={project.id}>
+              <ListItemText
+                primary={project.name}
+                secondary={`Descripción: ${project.description}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+        <Button variant="contained" color="primary" component={Link} to="/create-project">
+          Crear Proyecto
+        </Button>
+      </Paper>
 
-              <Box mt={2}>
-                <Typography variant="subtitle1">Projects:</Typography>
-                {projects
-                  .filter((project) => project.companyId === company.id)
-                  .map((project) => (
-                    <Box key={project.id} ml={2} mt={1}>
-                      <Typography variant="body1">{project.name}</Typography>
-                      <Typography variant="body2">{project.description}</Typography>
+      {/* Sección de Historias de Usuario */}
+      <Paper elevation={3} style={{ padding: '20px', marginBottom: '20px' }}>
+        <Typography variant="h5" gutterBottom>
+          Historias de Usuario
+        </Typography>
+        <List>
+          {userStories.map((story) => (
+            <ListItem key={story.id}>
+              <ListItemText
+                primary={story.title}
+                secondary={`Descripción: ${story.description}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+        <Button variant="contained" color="primary" component={Link} to="/create-user-story">
+          Crear Historia de Usuario
+        </Button>
+      </Paper>
 
-                      <Box mt={1}>
-                        <Typography variant="subtitle2">Tickets:</Typography>
-                        {tickets
-                          .filter((ticket) => ticket.projectId === project.id)
-                          .map((ticket) => (
-                            <Typography key={ticket.id} variant="body2">
-                              - {ticket.title} ({ticket.status})
-                            </Typography>
-                          ))}
-                      </Box>
-                    </Box>
-                  ))}
-              </Box>
-            </CardContent>
-          </Card>
-        ))
-      )}
-    </div>
+      {/* Sección de Tickets */}
+      <Paper elevation={3} style={{ padding: '20px', marginBottom: '20px' }}>
+        <Typography variant="h5" gutterBottom>
+          Tickets
+        </Typography>
+        <List>
+          {tickets.map((ticket) => (
+            <ListItem key={ticket.id}>
+              <ListItemText
+                primary={ticket.title}
+                secondary={`Estado: ${ticket.status} | Asociado a: ${ticket.userStoryId}`}
+              />
+              <Button
+                variant="outlined"
+                color="secondary"
+                component={Link}
+                to={`/edit-ticket/${ticket.id}`}
+                style={{ marginLeft: '10px' }}
+              >
+                Editar
+              </Button>
+            </ListItem>
+          ))}
+        </List>
+        <Button variant="contained" color="primary" component={Link} to="/create-ticket">
+          Crear Ticket
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          component={Link}
+          to="/tickets-history"
+          style={{ marginLeft: '10px' }}
+        >
+          Ver Historial
+        </Button>
+      </Paper>
+    </Container>
   );
 };
 
 export default HomePage;
+
+
 
 
 // import React from 'react';
