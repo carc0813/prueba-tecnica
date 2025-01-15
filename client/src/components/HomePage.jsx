@@ -41,7 +41,7 @@ const HomePage = () => {
             </ListItem>
           ))}
         </List>
-        <Button variant="contained" color="primary" component={Link} to="/create-project">
+        <Button variant="contained" color="primary" component={Link} to="/projects">
           Crear Proyecto
         </Button>
       </Paper>
@@ -112,14 +112,4 @@ export default HomePage;
 
 
 
-// import React from 'react';
 
-// const HomePage = () => {
-//   return (
-//     <div>
-//       <h1>Bienvenido a la Página de Inicio</h1>
-//     </div>
-//   );
-// };
-
-// export default HomePage;

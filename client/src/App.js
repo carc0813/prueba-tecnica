@@ -7,7 +7,7 @@ import HistorialTicketsPage from './components/HistorialTicketsPage';
 import CreateUserStoryPage from './components/CreateUserStoryPage';
 import EditTicketPage from './components/EditTicketPage';
 import CreateTicketPage from './components/CreateTicketPage';
-import CreateProject from './components/CreateProject';
+import Projects from './components/Projects';
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
   <Route path="/register" element={<RegisterPage />} />
   <Route path="/home" element={<HomePage />} />
   <Route path="/create-ticket" element={<CreateTicketPage />} />
-  <Route path="/create-project" element={<CreateProject />} />
+  <Route path="/projects" element={<Projects />} />
   <Route path="/tickets-history" element={<HistorialTicketsPage />} />
   <Route path="/create-user-story" element={<CreateUserStoryPage />} />
   <Route path="/edit-ticket/:ticketId" element={<EditTicketPage />} />

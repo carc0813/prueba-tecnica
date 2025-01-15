@@ -1,23 +1,24 @@
-import React, { useState, /* useEffect*/ } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createTicket } from '../redux/actions';
-//import { getUserStories } from '';
+import { createTicket, getUserStories } from '../redux/actions';
 import { TextField, Button, Select, MenuItem, Container, Typography } from '@mui/material';
 
 const CreateTicketPage = () => {
   const [ticketData, setTicketData] = useState({
     title: '',
     description: '',
+    comments: '', // Nuevo campo para comentarios
     status: 'Activo',
-    story_id: '', // Ajusta la clave para que coincida con el backend
+    story_id: '',
   });
-  const dispatch = useDispatch();
+  const [selectedStatus, setSelectedStatus] = useState('Todos');
 
+  const dispatch = useDispatch();
   const userStories = useSelector((state) => state.userStories.userStories);
 
-  // useEffect(() => {
-  //   dispatch(getUserStories());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(getUserStories());
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setTicketData({ ...ticketData, [e.target.name]: e.target.value });
@@ -26,12 +27,18 @@ const CreateTicketPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(createTicket(ticketData));
-    setTicketData({ title: '', description: '', status: 'Activo', story_id: '' });
+    setTicketData({ title: '', description: '', comments: '', status: 'Activo', story_id: '' });
   };
+
+  const filteredStories = userStories
+    ? userStories.filter((story) => selectedStatus === 'Todos' || story.status === selectedStatus)
+    : [];
 
   return (
     <Container>
-      <Typography variant="h5">Crear Ticket</Typography>
+      <Typography variant="h5" gutterBottom>
+        Crear Ticket
+      </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
           label="Título del Ticket"
@@ -51,20 +58,49 @@ const CreateTicketPage = () => {
           margin="normal"
           required
         />
-        <Select
-          name="story_id"
-          value={ticketData.story_id}
+        <TextField
+          label="Comentarios"
+          name="comments"
+          value={ticketData.comments}
           onChange={handleChange}
           fullWidth
           margin="normal"
+        />
+        <Typography variant="h6" style={{ marginTop: '20px' }}>
+          Seleccionar Historia de Usuario
+        </Typography>
+        <Select
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+          fullWidth
+          margin="normal"
         >
-          {userStories.map((story) => (
-            <MenuItem key={story.id} value={story.id}>
-              {story.title}
-            </MenuItem>
-          ))}
+          <MenuItem value="Todos">Todos</MenuItem>
+          <MenuItem value="Activo">Activo</MenuItem>
+          <MenuItem value="En Proceso">En Proceso</MenuItem>
+          <MenuItem value="Finalizado">Finalizado</MenuItem>
         </Select>
-        <Button type="submit" variant="contained" color="primary">
+        <Select
+          name="story_id"
+          value={ticketData.story_id || ''}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+        >
+          {filteredStories.length > 0 ? (
+            filteredStories.map((story) => (
+              <MenuItem key={story.id} value={story.id}>
+                {story.title} ({story.status})
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem disabled value="">
+              No hay historias disponibles
+            </MenuItem>
+          )}
+        </Select>
+        <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
           Crear Ticket
         </Button>
       </form>
@@ -73,4 +109,6 @@ const CreateTicketPage = () => {
 };
 
 export default CreateTicketPage;
+
+
 
